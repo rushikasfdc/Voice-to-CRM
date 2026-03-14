@@ -30,6 +30,17 @@ export default class VoiceToCrm extends LightningElement {
     // Widget expand/collapse
     @track expanded = false;
 
+    // Resolve recordId from URL if not provided (e.g., in Utility Bar)
+    get activeRecordId() {
+        if (this.recordId) return this.recordId;
+        // Try to extract from current URL: /lightning/r/Opportunity/{id}/view
+        try {
+            const match = window.location.pathname.match(/\/lightning\/r\/Opportunity\/([a-zA-Z0-9]{15,18})\//);
+            if (match) return match[1];
+        } catch (e) { /* ignore */ }
+        return null;
+    }
+
     // Voice state: idle, listening, transcribing, parsing, confirming, confirmed, done
     state = 'idle';
     listenTime = 0;
@@ -139,16 +150,42 @@ export default class VoiceToCrm extends LightningElement {
             const config = ACTION_CONFIG[action.type] || ACTION_CONFIG.update;
             const checked = this.state === 'confirmed' || this.state === 'done';
             return {
-                ...action,
                 id: `action-${index}`,
-                icon: config.icon,
+                actionLabel: action.label || this._buildLabel(action),
+                actionDetail: action.detail || this._buildDetail(action),
+                actionIcon: checked ? '✅' : config.icon,
                 checked,
                 cardClass: checked ? 'action-card action-card-checked' : 'action-card',
-                cardStyle: '',
                 iconStyle: `background: linear-gradient(135deg, ${config.color}22, ${config.color}11); border: 1px solid ${config.color}33;`,
                 labelColorStyle: `color: ${config.color};`,
             };
         });
+    }
+
+    _buildLabel(action) {
+        const labels = {
+            update: `Update ${action.field || 'Opportunity'}`,
+            activity: 'Log Activity',
+            contact: 'Create Contact',
+            role: 'Add Contact Role',
+            task: 'Create Task',
+            event: 'Create Event'
+        };
+        return labels[action.type] || action.type || 'Action';
+    }
+
+    _buildDetail(action) {
+        if (action.type === 'update' && action.field && action.value) {
+            return `${action.field} → ${action.value}`;
+        }
+        if (action.type === 'contact') {
+            const name = [action.firstName, action.lastName].filter(Boolean).join(' ');
+            return [name, action.title, action.role].filter(Boolean).join(' — ');
+        }
+        if (action.type === 'role') {
+            return [action.name, action.role].filter(Boolean).join(' → ');
+        }
+        return action.subject || action.description || '';
     }
 
     // ─── Lifecycle ───

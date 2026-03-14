@@ -93,14 +93,13 @@
                         <!-- Actions list -->
                         <div class="actions-list">
                             <template for:each={visibleActions} for:item="action">
-                                <div key={action.id} class={action.cardClass} style={action.cardStyle}>
+                                <div key={action.id} class={action.cardClass}>
                                     <div class="action-icon" style={action.iconStyle}>
-                                        <template lwc:if={action.checked}>✅</template>
-                                        <template lwc:else>{action.icon}</template>
+                                        {action.actionIcon}
                                     </div>
                                     <div class="action-content">
-                                        <div class="action-label" style={action.labelColorStyle}>{action.label}</div>
-                                        <div class="action-detail">{action.detail}</div>
+                                        <div class="action-label" style={action.labelColorStyle}>{action.actionLabel}</div>
+                                        <div class="action-detail">{action.actionDetail}</div>
                                     </div>
                                     <template lwc:if={isConfirming}>
                                         <button class="action-edit-btn">Edit</button>
