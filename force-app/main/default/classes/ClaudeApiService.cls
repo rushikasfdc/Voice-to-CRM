@@ -11,7 +11,7 @@ public with sharing class ClaudeApiService {
 
     // Claude config
     private static final String CLAUDE_ENDPOINT = 'https://api.anthropic.com/v1/messages';
-    private static final String CLAUDE_MODEL = 'claude-3-5-sonnet-20241022';
+    private static final String CLAUDE_MODEL = 'claude-sonnet-4-20250514';
     private static final String CLAUDE_API_VERSION = '2023-06-01';
 
     // OpenAI config
