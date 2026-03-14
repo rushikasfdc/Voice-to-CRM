@@ -1,0 +1,145 @@
+<template>
+    <!-- Floating Widget Container — fixed bottom-left -->
+    <div class="widget-container">
+
+        <!-- COLLAPSED: Small floating orb -->
+        <template lwc:if={isCollapsed}>
+            <button class="collapsed-orb" onclick={handleExpand} title="Voice Update">
+                <canvas class="siri-canvas-small" lwc:ref="siriCanvasSmall"></canvas>
+                <div class="orb-mic-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+                        <rect x="9" y="1" width="6" height="12" rx="3"></rect>
+                        <path d="M5 10a7 7 0 0 0 14 0"></path>
+                        <line x1="12" y1="17" x2="12" y2="22"></line>
+                    </svg>
+                </div>
+            </button>
+        </template>
+
+        <!-- EXPANDED: Full voice panel overlay -->
+        <template lwc:if={isExpanded}>
+            <div class="expanded-panel">
+                <!-- Panel Header -->
+                <div class="panel-header">
+                    <div class={statusDotClass}></div>
+                    <span class={statusLabelClass}>{statusLabel}</span>
+                    <template lwc:if={isListening}>
+                        <span class="recording-timer">● {formattedTime}</span>
+                    </template>
+                    <button class="close-btn" onclick={handleCollapse} title="Minimize">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Voice Area -->
+                <div class="voice-area">
+
+                    <!-- IDLE / LISTENING — Siri Orb -->
+                    <template lwc:if={showOrb}>
+                        <div class="orb-container">
+                            <canvas class="siri-canvas" lwc:ref="siriCanvas"></canvas>
+                            <button class={micButtonClass} onclick={handleMicClick}>
+                                <template lwc:if={isListening}>
+                                    <div class="stop-icon"></div>
+                                </template>
+                                <template lwc:else>
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                                        <rect x="9" y="1" width="6" height="12" rx="3"></rect>
+                                        <path d="M5 10a7 7 0 0 0 14 0"></path>
+                                        <line x1="12" y1="17" x2="12" y2="22"></line>
+                                    </svg>
+                                </template>
+                            </button>
+                        </div>
+                        <template lwc:if={isIdle}>
+                            <div class="helper-text">
+                                <div class="helper-title">Tap to update with voice</div>
+                                <div class="helper-sub">Describe what happened. AI will parse<br/>your words into Salesforce actions.</div>
+                            </div>
+                        </template>
+                        <template lwc:if={isListening}>
+                            <div class="helper-text">
+                                <div class="listening-hint">Speak naturally... tap ■ when done</div>
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- TRANSCRIBING / PARSING -->
+                    <template lwc:if={showTranscript}>
+                        <div class="transcript-box">
+                            <div class="transcript-label">Transcript</div>
+                            <div class="transcript-text">{displayedTranscript}<span class="cursor">|</span></div>
+                        </div>
+                        <template lwc:if={isParsing}>
+                            <div class="parsing-indicator">
+                                <div class="shimmer-bar">
+                                    <div class="shimmer-fill"></div>
+                                </div>
+                                <span class="parsing-text">AI parsing...</span>
+                            </div>
+                        </template>
+                    </template>
+
+                    <!-- CONFIRMING / CONFIRMED / DONE -->
+                    <template lwc:if={showActions}>
+                        <!-- Compact transcript -->
+                        <div class="transcript-compact">
+                            🎙 "{truncatedTranscript}..."
+                        </div>
+
+                        <!-- Actions list -->
+                        <div class="actions-list">
+                            <template for:each={visibleActions} for:item="action">
+                                <div key={action.id} class={action.cardClass} style={action.cardStyle}>
+                                    <div class="action-icon" style={action.iconStyle}>
+                                        <template lwc:if={action.checked}>✅</template>
+                                        <template lwc:else>{action.icon}</template>
+                                    </div>
+                                    <div class="action-content">
+                                        <div class="action-label" style={action.labelColorStyle}>{action.label}</div>
+                                        <div class="action-detail">{action.detail}</div>
+                                    </div>
+                                    <template lwc:if={isConfirming}>
+                                        <button class="action-edit-btn">Edit</button>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Confirm buttons -->
+                        <template lwc:if={isConfirming}>
+                            <div class="button-row">
+                                <button class="confirm-btn" onclick={handleConfirm}>
+                                    Confirm All ({actionCount})
+                                </button>
+                                <button class="cancel-btn" onclick={handleReset}>
+                                    Cancel
+                                </button>
+                            </div>
+                        </template>
+
+                        <!-- Done state -->
+                        <template lwc:if={isDone}>
+                            <div class="done-container">
+                                <div class="done-icon-circle">
+                                    <span class="done-check">✓</span>
+                                </div>
+                                <div class="done-title">Salesforce Updated</div>
+                                <div class="done-sub">{actionCount} actions completed in {elapsedTime}s</div>
+                                <button class="new-update-btn" onclick={handleReset}>
+                                    New Update
+                                </button>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+
+                <!-- Branding -->
+                <div class="branding">Voice • CRM — Powered by AI</div>
+            </div>
+        </template>
+    </div>
+</template>

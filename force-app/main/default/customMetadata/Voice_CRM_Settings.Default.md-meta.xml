@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>AI_Provider__c</field>
+        <value xsi:type="xsd:string">OpenAI</value>
+    </values>
+    <values>
+        <field>Claude_API_Key__c</field>
+        <value xsi:type="xsd:string">YOUR_CLAUDE_API_KEY_HERE</value>
+    </values>
+    <values>
+        <field>OpenAI_API_Key__c</field>
+        <value xsi:type="xsd:string">YOUR_OPENAI_API_KEY_HERE</value>
+    </values>
+</CustomMetadata>
