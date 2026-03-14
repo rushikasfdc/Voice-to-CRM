@@ -298,5 +298,5 @@ MIT License — build, modify, distribute, and sell freely.
 <p align="center">
   <strong>🎙️ Voice to CRM</strong><br/>
   <em>Stop typing. Start talking.</em><br/><br/>
-  Built with 💜 by <strong>Rushika P.</strong>
+  Built with 💜 by <strong>Rushika Pawar</strong>
 </p>
