@@ -8,9 +8,7 @@
 
 <h1 align="center">🎙️ Voice to CRM</h1>
 
-<p align="center">
-  <video src="https://github.com/user-attachments/assets/464a8616-70c0-48b9-8d29-ed1e3d67ac26" width="720" controls playsinline></video>
-</p>
+<https://github.com/user-attachments/assets/464a8616-70c0-48b9-8d29-ed1e3d67ac26>
 
 <p align="center">
   <strong>Talk to Salesforce. Let AI do the typing.</strong><br/>
